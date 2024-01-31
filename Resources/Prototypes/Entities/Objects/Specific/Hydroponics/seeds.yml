@@ -24,6 +24,16 @@
 
 - type: entity
   parent: SeedBase
+  name: packet of mheat seeds
+  id: MheatSeeds
+  components:
+    - type: Seed
+      seedId: mheat
+    - type: Sprite
+      sprite: Objects/Specific/Hydroponics/mheat.rsi
+
+- type: entity
+  parent: SeedBase
   name: packet of oat seeds
   id: OatSeeds
   components:
@@ -151,6 +161,16 @@
       seedId: sugarcane
     - type: Sprite
       sprite: Objects/Specific/Hydroponics/sugarcane.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of saltcane seeds
+  id: SaltcaneSeeds
+  components:
+    - type: Seed
+      seedId: saltcane
+    - type: Sprite
+      sprite: Objects/Specific/Hydroponics/saltcane.rsi
 
 - type: entity
   parent: SeedBase
@@ -539,3 +559,13 @@
       seedId: cotton
     - type: Sprite
       sprite: Objects/Specific/Hydroponics/cotton.rsi
+
+- type: entity
+  parent: SeedBase
+  name: packet of duracotton seeds
+  id: DuracottonSeeds
+  components:
+    - type: Seed
+      seedId: duracotton
+    - type: Sprite
+      sprite: Objects/Specific/Hydroponics/duracotton.rsi

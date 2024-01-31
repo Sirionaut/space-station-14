@@ -74,6 +74,9 @@ public sealed class MutationSystem : EntitySystem
         MutateBool(ref seed.Bioluminescent, true , 10, totalbits, severity);
         MutateBool(ref seed.TurnIntoKudzu , true , 10, totalbits, severity);
         MutateBool(ref seed.CanScream     , true , 10, totalbits, severity);
+        MutateBool(ref seed.CanLaugh      , true,  5, totalbits, severity);
+        MutateBool(ref seed.CanCry        , true,  5, totalbits, severity);
+
         seed.BioluminescentColor = RandomColor(seed.BioluminescentColor, 10, totalbits, severity);
 
         // ConstantUpgade (10)

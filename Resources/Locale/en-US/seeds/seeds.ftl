@@ -5,6 +5,8 @@ seeds-noun-spores = spores
 # Seeds
 seeds-wheat-name = wheat
 seeds-wheat-display-name = wheat stalks
+seeds-mheat-name = mheat
+seeds-mheat-display-name = mheat stalks
 seeds-oat-name = oat
 seeds-oat-display-name = oat stalks
 seeds-banana-name = banana
@@ -105,3 +107,5 @@ seeds-pumpkin-name = pumpkin
 seeds-pumpkin-display-name = pumpkins
 seeds-cotton-name = cotton
 seeds-cotton-display-name = cotton plant
+seeds-duracotton-name = duracotton
+seeds-duracotton-display-name = duracotton plant

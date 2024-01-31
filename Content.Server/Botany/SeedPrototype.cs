@@ -228,10 +228,16 @@ public partial class SeedData
     [DataField("plantIconState")] public string PlantIconState { get; set; } = "produce";
 
     [DataField("screamSound")]
-    public SoundSpecifier ScreamSound = new SoundPathSpecifier("/Audio/Voice/Human/malescream_1.ogg");
-
-
+    public SoundSpecifier ScreamSound = new SoundPathSpecifier("/Audio/Voice/Human/wilhelm_scream.ogg");
     [DataField("screaming")] public bool CanScream;
+
+    [DataField("laughSound")]
+    public SoundSpecifier LaughSound = new SoundPathSpecifier("/Audio/Voice/Human/womanlaugh.ogg");
+    [DataField("laughing")] public bool CanLaugh;
+
+    [DataField("cryingSound")]
+    public SoundSpecifier CrySound = new SoundPathSpecifier("/Audio/Voice/Human/cry_male_1.ogg");
+    [DataField("crying")] public bool CanCry;
 
     [DataField("bioluminescent")] public bool Bioluminescent;
     [DataField("bioluminescentColor")] public Color BioluminescentColor { get; set; } = Color.White;
@@ -300,6 +306,8 @@ public partial class SeedData
             PlantIconState = PlantIconState,
             Bioluminescent = Bioluminescent,
             CanScream = CanScream,
+            CanLaugh = CanLaugh,
+            CanCry = CanCry,
             TurnIntoKudzu = TurnIntoKudzu,
             BioluminescentColor = BioluminescentColor,
             SplatPrototype = SplatPrototype,
@@ -363,6 +371,8 @@ public partial class SeedData
             PlantIconState = other.PlantIconState,
             Bioluminescent = Bioluminescent,
             CanScream = CanScream,
+            CanLaugh = CanLaugh,
+            CanCry = CanCry,
             TurnIntoKudzu = TurnIntoKudzu,
             BioluminescentColor = BioluminescentColor,
             SplatPrototype = other.SplatPrototype,

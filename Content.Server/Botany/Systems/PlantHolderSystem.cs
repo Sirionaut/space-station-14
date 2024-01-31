@@ -270,9 +270,25 @@ public sealed class PlantHolderSystem : EntitySystem
                 ("seedName", displayName)), args.User);
             component.Health -= (_random.Next(3, 5) * 10);
 
-            if (component.Seed != null && component.Seed.CanScream)
+            if (component.Seed != null)
             {
-                _audio.PlayPvs(component.Seed.ScreamSound, uid, AudioParams.Default.WithVolume(-2));
+                if (component.Seed.CanScream || component.Seed.CanLaugh || component.Seed.CanCry)
+                {
+                    switch (_random.Next(1, 3))
+                    {
+                        case 1:
+                            _audio.PlayPvs(component.Seed.ScreamSound, uid, AudioParams.Default.WithVolume(-2));
+                            break;
+                        case 2:
+                            _audio.PlayPvs(component.Seed.LaughSound, uid, AudioParams.Default.WithVolume(-2));
+                            break;
+                        case 3:
+                            _audio.PlayPvs(component.Seed.CrySound, uid, AudioParams.Default.WithVolume(-2));
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
             if (_random.Prob(0.3f))
@@ -423,12 +439,16 @@ public sealed class PlantHolderSystem : EntitySystem
             component.UpdateSpriteAfterUpdate = true;
         }
 
-        // Nutrient consumption.
-        if (component.Seed.NutrientConsumption > 0 && component.NutritionLevel > 0 && _random.Prob(0.75f))
+        // No nutrient consumption when fully grown, incentive for not instant harvesting
+        if (!component.Harvest)
         {
-            component.NutritionLevel -= MathF.Max(0f, component.Seed.NutrientConsumption * HydroponicsSpeedMultiplier);
-            if (component.DrawWarnings)
-                component.UpdateSpriteAfterUpdate = true;
+            // Nutrient consumption.
+            if (component.Seed.NutrientConsumption > 0 && component.NutritionLevel > 0 && _random.Prob(0.75f))
+            {
+                component.NutritionLevel -= MathF.Max(0f, component.Seed.NutrientConsumption * HydroponicsSpeedMultiplier);
+                if (component.DrawWarnings)
+                    component.UpdateSpriteAfterUpdate = true;
+            }
         }
 
         // Water consumption.
@@ -716,8 +736,26 @@ public sealed class PlantHolderSystem : EntitySystem
         component.Harvest = false;
         component.LastProduce = component.Age;
 
-        if (component.Seed != null && component.Seed.CanScream)
-            _audio.PlayPvs(component.Seed.ScreamSound, uid, AudioParams.Default.WithVolume(-2));
+        if (component.Seed != null)
+        {
+            if (component.Seed.CanScream || component.Seed.CanLaugh || component.Seed.CanCry)
+            {
+                switch (_random.Next(1, 3))
+                {
+                    case 1:
+                        _audio.PlayPvs(component.Seed.ScreamSound, uid, AudioParams.Default.WithVolume(-3));
+                        break;
+                    case 2:
+                        _audio.PlayPvs(component.Seed.LaughSound, uid, AudioParams.Default.WithVolume(-3));
+                        break;
+                    case 3:
+                        _audio.PlayPvs(component.Seed.CrySound, uid, AudioParams.Default.WithVolume(-3));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
         if (component.Seed?.HarvestRepeat == HarvestType.NoRepeat)
             RemovePlant(uid, component);

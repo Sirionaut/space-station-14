@@ -27,12 +27,20 @@ public sealed class BotanySwabSystem : EntitySystem
     /// </summary>
     private void OnExamined(EntityUid uid, BotanySwabComponent swab, ExaminedEvent args)
     {
+
         if (args.IsInDetailsRange)
         {
             if (swab.SeedData != null)
-                args.PushMarkup(Loc.GetString("swab-used"));
+            {
+                string displayName = Loc.GetString(swab.SeedData.DisplayName);
+                args.PushMarkup(Loc.GetString("botany-swab-used",
+                    ("seedName", displayName),
+                    ("toBeForm", displayName.EndsWith('s') ? "" : "a ")));
+            }
             else
-                args.PushMarkup(Loc.GetString("swab-unused"));
+            {
+                args.PushMarkup(Loc.GetString("botany-swab-unused"));
+            }
         }
     }
 
