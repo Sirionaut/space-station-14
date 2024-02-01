@@ -249,6 +249,8 @@ public partial class SeedData
     [DataField("turnIntoKudzu")] public bool TurnIntoKudzu;
     [DataField("splatPrototype")] public string? SplatPrototype { get; set; }
 
+    [DataField("dripping")] public bool Dripping;
+
     #endregion
 
     /// <summary>

@@ -770,6 +770,30 @@
       PotencyDivisor: 10
 
 - type: seed
+  id: glasseggy
+  name: seeds-glasseggy-name
+  noun: seeds-noun-seeds
+  displayName: seeds-glasseggy-display-name
+  plantRsi: Objects/Specific/Hydroponics/glasseggy.rsi
+  packetPrototype: GlassEggySeeds
+  productPrototypes:
+    - FoodEggGlass
+  harvestRepeat: Repeat
+  lifespan: 75
+  maturation: 6
+  production: 12
+  yield: 2
+  potency: 20
+  nutrientConsumption: 1
+  idealLight: 9
+  idealHeat: 298
+  chemicals:
+    Egg:
+      Min: 1
+      Max: 10
+      PotencyDivisor: 10
+
+- type: seed
   id: cannabis
   name: seeds-cannabis-name
   noun: seeds-noun-seeds

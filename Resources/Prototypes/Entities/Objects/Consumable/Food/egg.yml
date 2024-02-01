@@ -138,3 +138,40 @@
   - type: Construction
     graph: Egg
     node: boiled
+
+- type: entity
+  parent: FoodEggBase
+  id: FoodEggGlass
+  description: You can see the yolk swirling around inside the glass egg.
+  name: glass egg
+  components:
+  - type: Sprite
+    layers:
+      - state: icon
+        map: [ "enum.DamageStateVisualLayers.Base" ]
+  - type: RandomSprite
+    available:
+      - enum.DamageStateVisualLayers.Base:
+          icon: ""
+          white: ""
+  - type: Construction
+    graph: Egg
+    node: start
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 1
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: desecration
+      - !type:SpillBehavior
+        solution: food
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ShardGlass:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]

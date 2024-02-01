@@ -3,11 +3,13 @@ using Content.Server.Atmos.EntitySystems;
 using Content.Server.Botany.Components;
 using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Server.Fluids.Components;
+using Content.Server.Fluids.EntitySystems;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Kitchen.Components;
 using Content.Server.Popups;
 using Content.Shared.Botany;
 using Content.Shared.Burial.Components;
+using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Examine;
@@ -25,6 +27,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using System.Linq;
 
 namespace Content.Server.Botany.Systems;
 
@@ -43,6 +46,8 @@ public sealed class PlantHolderSystem : EntitySystem
     [Dependency] private readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly RandomHelperSystem _randomHelper = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+
+    [Dependency] private readonly PuddleSystem _puddleSystem = default!;
 
 
     public const float HydroponicsSpeedMultiplier = 1f;
@@ -270,26 +275,18 @@ public sealed class PlantHolderSystem : EntitySystem
                 ("seedName", displayName)), args.User);
             component.Health -= (_random.Next(3, 5) * 10);
 
-            if (component.Seed != null)
-            {
-                if (component.Seed.CanScream || component.Seed.CanLaugh || component.Seed.CanCry)
-                {
-                    switch (_random.Next(1, 3))
+            if (component.Seed != null && (component.Seed.CanScream || component.Seed.CanLaugh || component.Seed.CanCry))
+                _audio.PlayPvs(
+                    _random.Next(1, 4) switch
                     {
-                        case 1:
-                            _audio.PlayPvs(component.Seed.ScreamSound, uid, AudioParams.Default.WithVolume(-2));
-                            break;
-                        case 2:
-                            _audio.PlayPvs(component.Seed.LaughSound, uid, AudioParams.Default.WithVolume(-2));
-                            break;
-                        case 3:
-                            _audio.PlayPvs(component.Seed.CrySound, uid, AudioParams.Default.WithVolume(-2));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
+                        1 => component.Seed.ScreamSound,
+                        2 => component.Seed.LaughSound,
+                        3 => component.Seed.CrySound,
+                        _ => null
+                    },
+                    uid,
+                    AudioParams.Default.WithVolume(-3)
+                );
 
             if (_random.Prob(0.3f))
                 component.Sampled = true;
@@ -346,7 +343,6 @@ public sealed class PlantHolderSystem : EntitySystem
     {
         // TODO
     }
-
 
     public void Update(EntityUid uid, PlantHolderComponent? component = null)
     {
@@ -644,6 +640,29 @@ public sealed class PlantHolderSystem : EntitySystem
             }
         }
 
+        // Drips a randomly choosen contained chem on the floor beneath the tray. #TODO: Playeraction for sentient trays.
+        if (component.Seed.Dripping)
+        {
+            if (component.Seed == null)
+                return;
+            Solution plantjuice = new();
+            if (component.Seed.Chemicals.Count > 0)
+            {
+                if (_random.Prob(0.5f))
+                {
+                    Random random = new Random();
+                    int randomIndex = random.Next(0, component.Seed.Chemicals.Count);
+                    var randomEntry = component.Seed.Chemicals.ElementAt(randomIndex);
+                    string randomKey = randomEntry.Key;
+                    var randomValue = randomEntry.Value;
+
+                    plantjuice.AddReagent(component.Seed.Chemicals.ElementAt(randomIndex).Key, randomValue.Min);
+                    _puddleSystem.TrySpillAt(uid, plantjuice, out _);
+                    _popup.PopupEntity(Loc.GetString("plant-holder-component-mutation-dripping"), uid, PopupType.SmallCaution);
+                }
+            }
+        }
+
         CheckLevelSanity(uid, component);
 
         if (component.Seed.Sentient)
@@ -736,26 +755,18 @@ public sealed class PlantHolderSystem : EntitySystem
         component.Harvest = false;
         component.LastProduce = component.Age;
 
-        if (component.Seed != null)
-        {
-            if (component.Seed.CanScream || component.Seed.CanLaugh || component.Seed.CanCry)
-            {
-                switch (_random.Next(1, 3))
+        if (component.Seed != null && (component.Seed.CanScream || component.Seed.CanLaugh || component.Seed.CanCry))
+            _audio.PlayPvs(
+                _random.Next(1, 4) switch
                 {
-                    case 1:
-                        _audio.PlayPvs(component.Seed.ScreamSound, uid, AudioParams.Default.WithVolume(-3));
-                        break;
-                    case 2:
-                        _audio.PlayPvs(component.Seed.LaughSound, uid, AudioParams.Default.WithVolume(-3));
-                        break;
-                    case 3:
-                        _audio.PlayPvs(component.Seed.CrySound, uid, AudioParams.Default.WithVolume(-3));
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+                    1 => component.Seed.ScreamSound,
+                    2 => component.Seed.LaughSound,
+                    3 => component.Seed.CrySound,
+                    _ => null
+                },
+                uid,
+                AudioParams.Default.WithVolume(-3)
+            );
 
         if (component.Seed?.HarvestRepeat == HarvestType.NoRepeat)
             RemovePlant(uid, component);
