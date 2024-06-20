@@ -9,6 +9,9 @@ using Content.Shared.Item;
 using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 
+using Content.Shared.Popups;
+using Content.Shared.Tag;
+
 namespace Content.Shared.Clothing.EntitySystems;
 
 public abstract class ClothingSystem : EntitySystem
@@ -18,6 +21,8 @@ public abstract class ClothingSystem : EntitySystem
     [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoidSystem = default!;
     [Dependency] private readonly InventorySystem _invSystem = default!;
     [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
+    [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
 
     public override void Initialize()
     {
@@ -181,6 +186,11 @@ public abstract class ClothingSystem : EntitySystem
         if (args.Handled || args.Cancelled || args.Target is not { } target)
             return;
         args.Handled = _invSystem.TryEquip(args.User, target, ent, args.Slot, clothing: ent.Comp, predicted: true, checkDoafter: false);
+
+        if (_tag.HasTag(ent, "Medal"))
+        {
+            _popup.PopupClient("MEDAL", target);
+        }
     }
 
     private void OnUnequipDoAfter(Entity<ClothingComponent> ent, ref ClothingUnequipDoAfterEvent args)
