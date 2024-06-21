@@ -51,5 +51,5 @@ trait-cowboy-desc = You speak with a distinct cowboy accent!
 trait-italian-name = Italian accent
 trait-italian-desc = Mamma mia! You seem to have lived in space italy!
 
-trait-AndroidAccent-name = Android accent
-trait-AndroidAccent-desc = Fully functional Noonien Soong-esque model of an Android, except contractions
+trait-android-accent-name = Android accent
+trait-android-accent-desc = Soong-type model of an android, fully functional, except it cannot use contractions.

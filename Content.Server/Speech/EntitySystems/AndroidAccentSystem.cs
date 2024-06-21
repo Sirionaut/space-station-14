@@ -1,19 +1,14 @@
 using System.Text.RegularExpressions;
 using Content.Server.Speech.Components;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
 namespace Content.Server.Speech.EntitySystems;
 
 /// <summary>
-/// Accent that replaces english contractions in messages.
+///     Accent that replaces english contractions in messages.
 /// </summary>
 public sealed class AndroidAccentSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly ILocalizationManager _loc = default!;
-
     private static readonly Dictionary<string, string> SpecialPhrases = new Dictionary<string, string>
     {
         // Special cases that are done before the regular replacements
@@ -30,7 +25,6 @@ public sealed class AndroidAccentSystem : EntitySystem
         { @"\bisn't it\b", "is it not" },
         { @"\baren't I\b", "am I not" },
     };
-
     private static readonly Dictionary<string, string> Contractions = new Dictionary<string, string>
     {
         // Contraction patterns
@@ -49,15 +43,15 @@ public sealed class AndroidAccentSystem : EntitySystem
         { @"\bhow've\b", "how have" },
         { @"\bhow'd\b", "how would" },
         { @"\bhow'll\b", "how will" },
-        { @"\bshan't\b", "shall not" }
+        { @"\bshan't\b", "shall not" },
+        { @"\bhadn't\b", "had not" },
     };
-
     private static readonly List<(Regex regex, string replacement)> SpecialPhrasePatterns = new List<(Regex, string)>();
     private static readonly List<(Regex regex, string replacement)> ContractionPatterns = new List<(Regex, string)>();
     public override void Initialize()
     {
         base.Initialize();
-
+        SubscribeLocalEvent<AndroidAccentComponent, AccentGetEvent>(OnAccentGet);
         // Compile regex patterns
         foreach (var (pattern, replacement) in SpecialPhrases)
         {
@@ -68,8 +62,6 @@ public sealed class AndroidAccentSystem : EntitySystem
         {
             ContractionPatterns.Add((new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase), replacement));
         }
-
-        SubscribeLocalEvent<AndroidAccentComponent, AccentGetEvent>(OnAccentGet);
     }
 
     private void OnAccentGet(EntityUid uid, AndroidAccentComponent component, AccentGetEvent args)
@@ -78,7 +70,7 @@ public sealed class AndroidAccentSystem : EntitySystem
     }
 
     /// <summary>
-    /// Replaces contractions in a message.
+    ///     Replaces contractions in a message.
     /// </summary>
     /// <param name="message">Original message with contractions.</param>
     /// <returns>Message with contractions replaced.</returns>
@@ -89,13 +81,11 @@ public sealed class AndroidAccentSystem : EntitySystem
         {
             message = regex.Replace(message, replacement);
         }
-
         // Apply general contractions
         foreach (var (regex, replacement) in ContractionPatterns)
         {
             message = regex.Replace(message, replacement);
         }
-
         return message;
     }
 }

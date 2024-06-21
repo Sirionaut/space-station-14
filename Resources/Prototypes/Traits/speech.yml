@@ -63,15 +63,6 @@
     - type: ReplacementAccent
       accent: liar
 
-- type: trait
-  id: AndroidAccent
-  name: trait-AndroidAccent-name
-  description: trait-AndroidAccent-desc
-  category: SpeechTraits
-  cost: 1
-  components:
-    - type: AndroidAccent
-
 # 2 Cost
 
 - type: trait
@@ -95,3 +86,12 @@
   cost: 2
   components:
     - type: FrontalLisp
+
+- type: trait
+  id: AndroidAccent
+  name: trait-android-accent-name
+  description: trait-android-accent-desc
+  category: SpeechTraits
+  cost: 2
+  components:
+    - type: AndroidAccent
